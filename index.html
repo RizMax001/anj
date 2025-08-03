@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rizky ACODA - Panel WA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+    body {
+      background: #0d1117;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .panel {
+      background: #161b22;
+      border-radius: 16px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 15px #00ffff33;
+    }
+    h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00ffff;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #21262d;
+      color: white;
+      font-size: 15px;
+    }
+    button {
+      background: #00ffff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00d0d0;
+    }
+    .hidden {
+      display: none;
+    }
+    pre {
+      background: #0d1117;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid #00ffff33;
+      margin-top: 10px;
+    }
+    #methodDesc {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ccc;
+      background: #1e2229;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #00ffff;
+    }
+    ul {
+      margin-top: 10px;
+      list-style: none;
+      padding-left: 0;
+    }
+    ul li {
+      background: #1f2733;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="panel" id="loginBox">
+  <h2>Rizky Maxz Panel</h2>
+  <input type="text" id="tokenInput" placeholder="Masukkan token...">
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="panel hidden" id="mainPanel">
+  <h2 id="welcomeText">Selamat Datang</h2>
+
+  <div id="tutorialSection">
+    <h3>Sanbutan</h3>
+    <div id="tutorialContent">Memuat...</div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <h3>MT BAN</h3>
+    <select id="methodSelect" onchange="showKriminalText()"></select>
+    <pre id="kriminalText">Memuat teks...</pre>
+    <div id="methodDesc">Penjelasan metode akan muncul di sini.</div>
+    <button onclick="copyText()">Salin Text</button>
+  </div>
+
+  <div class="hidden" id="adminPanel" style="margin-top: 30px;">
+    <h3>Daftar User (Superadmin)</h3>
+    <ul id="userList"></ul>
+  </div>
+</div>
+
+<script>
+  const BIN_ID = "68734537831df8208c74c0ca";
+  const API_KEY = "$2a$10$xoksvQQ6T.CPIUy5tMncgOKp5Z4Qlbobs6GxbIhYy4vP7McJLriqq";
+
+  let allData = null;
+  let currentUser = null;
+
+  async function fetchData() {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { "X-Master-Key": API_KEY }
+    });
+    const data = await res.json();
+    return data.record;
+  }
+
+  async function login() {
+    const token = document.getElementById("tokenInput").value.trim();
+    const data = await fetchData();
+    allData = data;
+
+    const found = data.tokens.find(u => u.token === token);
+    if (!found) return alert("Token tidak valid!");
+
+    currentUser = found;
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("mainPanel").classList.remove("hidden");
+
+    document.getElementById("welcomeText").innerText = `Selamat Datang, ${found.name} (${found.role})`;
+    showTutorial();
+    fillMethodDropdown();
+
+    if (found.role === "superadmin") {
+      document.getElementById("adminPanel").classList.remove("hidden");
+      showUserList();
+    }
+  }
+
+  function showTutorial() {
+    const tut = allData.tutorial;
+    const box = document.getElementById("tutorialContent");
+    if (tut.type === "text") {
+      box.innerHTML = `<pre>${tut.content}</pre>`;
+    } else if (tut.type === "video") {
+      box.innerHTML = `
+        <video width="100%" controls>
+          <source src="${tut.content}" type="video/mp4">
+          Video tidak tersedia.
+        </video>`;
+    }
+  }
+
+  function fillMethodDropdown() {
+    const select = document.getElementById("methodSelect");
+    select.innerHTML = "";
+    allData.text_kriminal.forEach((item, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = item.method;
+      select.appendChild(opt);
+    });
+    showKriminalText();
+  }
+
+  function showKriminalText() {
+    const index = document.getElementById("methodSelect").value;
+    const item = allData.text_kriminal[index];
+    document.getElementById("kriminalText").textContent = item?.content || "Tidak ditemukan.";
+    document.getElementById("methodDesc").innerText = item?.description || "Tidak ada penjelasan.";
+  }
+
+  function copyText() {
+    const text = document.getElementById("kriminalText").textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Text berhasil disalin!");
+    });
+  }
+
+  function showUserList() {
+    const list = document.getElementById("userList");
+    list.innerHTML = allData.tokens.map(user => `
+      <li>${user.name} - <b>${user.role}</b></li>
+    `).join("");
+  }
+</script>
+
+</body>
+</html>
