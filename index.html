@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Rizky ACODA - Panel WA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rizky MAXZ - Panel WA</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     * {
@@ -10,6 +11,7 @@
       box-sizing: border-box;
       font-family: 'Orbitron', sans-serif;
     }
+
     body {
       background: #0d1117;
       color: #f0f0f0;
@@ -20,19 +22,23 @@
       min-height: 100vh;
       padding: 20px;
     }
+
     .panel {
       background: #161b22;
       border-radius: 16px;
-      padding: 30px;
+      padding: 24px;
       width: 100%;
-      max-width: 500px;
+      max-width: 420px;
       box-shadow: 0 0 15px #00ffff33;
     }
+
     h2, h3 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       color: #00ffff;
+      font-size: 1.2rem;
     }
+
     input, select, button {
       width: 100%;
       padding: 12px;
@@ -41,8 +47,9 @@
       border-radius: 8px;
       background: #21262d;
       color: white;
-      font-size: 15px;
+      font-size: 0.95rem;
     }
+
     button {
       background: #00ffff;
       color: black;
@@ -50,12 +57,15 @@
       cursor: pointer;
       transition: 0.3s;
     }
+
     button:hover {
       background: #00d0d0;
     }
+
     .hidden {
       display: none;
     }
+
     pre {
       background: #0d1117;
       padding: 15px;
@@ -64,26 +74,41 @@
       word-wrap: break-word;
       border: 1px solid #00ffff33;
       margin-top: 10px;
+      font-size: 0.9rem;
     }
+
     #methodDesc {
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 0.85rem;
       color: #ccc;
       background: #1e2229;
       padding: 10px;
       border-radius: 8px;
       border-left: 4px solid #00ffff;
     }
+
     ul {
       margin-top: 10px;
       list-style: none;
       padding-left: 0;
     }
+
     ul li {
       background: #1f2733;
       padding: 8px 12px;
       border-radius: 6px;
       margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    @media screen and (max-width: 480px) {
+      .panel {
+        padding: 20px;
+        max-width: 95%;
+      }
+      h2, h3 {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -99,7 +124,7 @@
   <h2 id="welcomeText">Selamat Datang</h2>
 
   <div id="tutorialSection">
-    <h3>Sanbutan</h3>
+    <h3>Sambutan</h3>
     <div id="tutorialContent">Memuat...</div>
   </div>
 
